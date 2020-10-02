@@ -5,11 +5,11 @@ const express = require("express"),
     keys = require("./config/keys"),
     cookieSession = require("cookie-session"),
     authRoutes = require("./routes/auth_routes"),
-    passportSetup = require("./config/passport-setup"),
+    passportSetup = require("./config/passport_setup"),
     profileRoutes = require("./routes/profile-routes"),
     User = require("./models/User");
 
-//connecting mongoose
+//COONECTING MONGOOSE
 mongoose.connect(keys.mongodb.dbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -17,10 +17,11 @@ mongoose.connect(keys.mongodb.dbURI, {
     useCreateIndex: true
 });
 
-// set view engine
+//APP CONFIG
+app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
-// set up session cookies
+//SET UP COOKIE SESSION
 app.use(
     cookieSession({
         // milliseconds of a day
@@ -34,23 +35,17 @@ app.use(
 //     console.log(allUser);
 // });
 
-// initialize passport
+//INITIALIZE PASSPORT
 app.use(passport.initialize());
-
 app.use(passport.session());
 
-// set up routes
+//SETUP ROUTES
 app.use("/", authRoutes);
 app.use("/profile", profileRoutes);
 
-// create home route
-app.get("/", (req, res) => {
-    res.render("home", { user: req.user });
-});
-//Setup Local Host
+//LISTING SERVER
 const hostname = "localhost",
     port = "3000";
-
 app.listen(port, hostname, (req, res) => {
     console.log(` Server running at http://${hostname}:${port}/`);
 });
